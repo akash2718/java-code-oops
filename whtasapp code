@@ -1,0 +1,85 @@
+package Whatsapp;
+
+import java.util.*;
+
+class User {
+    String name;
+    String phoneNumber;
+    List<String> chatHistory = new ArrayList<>();
+
+    public User(String name, String phoneNumber) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void sendMessage(User receiver, String message) {
+        String msg = this.name + " to " + receiver.name + ": " + message;
+        this.chatHistory.add("You: " + message);
+        receiver.chatHistory.add(this.name + ": " + message);
+    }
+
+    public void showChatHistory() {
+        System.out.println("Chat History for " + name + ":");
+        for (String msg : chatHistory) {
+            System.out.println(msg);
+        }
+    }
+}
+
+public class Whats {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Map<String, User> users = new HashMap<>(); 
+
+        while (true) {
+            System.out.println("1. Register\n2. Chat\n3. View Chat History\n4. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter Name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter Phone Number: ");
+                    String phoneNumber = scanner.nextLine();
+                    users.put(phoneNumber, new User(name, phoneNumber));
+                    System.out.println("User Registered Successfully!\n");
+                    break;
+                case 2:
+                    System.out.print("Enter Your Phone Number: ");
+                    String senderPhone = scanner.nextLine();
+                    if (!users.containsKey(senderPhone)) {
+                        System.out.println("User not found! Register first.\n");
+                        break;
+                    }
+                    System.out.print("Enter Receiver's Phone Number: ");
+                    String receiverPhone = scanner.nextLine();
+                    if (!users.containsKey(receiverPhone)) {
+                        System.out.println("Receiver not found!\n");
+                        break;
+                    }
+                    System.out.print("Enter Message: ");
+                    String message = scanner.nextLine();
+                    users.get(senderPhone).sendMessage(users.get(receiverPhone), message);
+                    System.out.println("Message Sent!\n");
+                    break;
+                case 3:
+                    System.out.print("Enter Your Phone Number: ");
+                    String userPhone = scanner.nextLine();
+                    if (users.containsKey(userPhone)) {
+                        users.get(userPhone).showChatHistory();
+                    } else {
+                        System.out.println("User not found!\n");
+                    }
+                    break;
+                case 4:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice! Try again.\n");
+            }
+        }
+    }
+}
